@@ -3,3 +3,8 @@
 .DS_Store
 
 .github/README.md
+
+# 构建产物
+*.exe
+artifacts/
+Cargo.lock

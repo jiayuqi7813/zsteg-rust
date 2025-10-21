@@ -1,0 +1,21 @@
+# Cargo 构建配置
+
+# Linux musl 静态链接优化
+[target.x86_64-unknown-linux-musl]
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[target.aarch64-unknown-linux-musl]
+rustflags = ["-C", "target-feature=+crt-static"]
+
+# Windows MSVC 静态链接 C runtime
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]
+
+# 发布构建优化
+[profile.release]
+opt-level = 3          # 最大优化
+lto = true             # 链接时优化
+codegen-units = 1      # 单个代码生成单元（更好的优化）
+strip = true           # 自动 strip 符号
+panic = "abort"        # Panic 时直接终止（减小体积）
+

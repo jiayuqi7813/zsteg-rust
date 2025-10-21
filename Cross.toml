@@ -1,0 +1,12 @@
+# Cross 编译配置
+# 用于 ARM64 musl 静态链接
+
+[build.env]
+passthrough = [
+    "CARGO_TERM_COLOR",
+]
+
+[target.aarch64-unknown-linux-musl]
+# 使用最新的 musl 镜像
+image = "ghcr.io/cross-rs/aarch64-unknown-linux-musl:latest"
+
