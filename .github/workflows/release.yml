@@ -72,19 +72,22 @@ jobs:
         with:
           key: ${{ matrix.target }}
 
-      - name: Build release binary
+      - name: Build release binary (ARM64 Linux)
+        if: matrix.target == 'aarch64-unknown-linux-musl'
         run: |
-          if [ "${{ matrix.target }}" = "aarch64-unknown-linux-musl" ]; then
-            # ARM64 musl 需要使用 cross 工具
-            cargo install cross --git https://github.com/cross-rs/cross || true
-            cross build --release --target ${{ matrix.target }}
-          else
-            cargo build --release --target ${{ matrix.target }}
-          fi
+          cargo install cross --git https://github.com/cross-rs/cross || true
+          cross build --release --target ${{ matrix.target }}
 
-      - name: Strip binary (Linux/macOS)
-        if: matrix.os != 'windows-latest'
+      - name: Build release binary (Other platforms)
+        if: matrix.target != 'aarch64-unknown-linux-musl'
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Strip binary (Linux x86_64 / macOS)
+        if: matrix.os != 'windows-latest' && matrix.target != 'aarch64-unknown-linux-musl'
         run: strip target/${{ matrix.target }}/release/${{ matrix.artifact_name }}
+      
+      # ARM64 Linux 使用 cross 构建，已经自动 strip 了（或者在容器内处理）
+      # 不需要额外 strip，因为 .cargo/config.toml 中已配置 strip = true
 
       - name: Prepare artifact
         shell: bash
